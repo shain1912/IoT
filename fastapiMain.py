@@ -61,6 +61,8 @@ async def ws_handler(websocket: WebSocket):
     try:
         while True:
             message = await websocket.receive()
+            if message["type"] == "websocket.disconnect":
+                break
             if "bytes" in message and message["bytes"] is not None:
                 data = message["bytes"]
                 print(len(data))
@@ -75,6 +77,8 @@ async def ws_handler(websocket: WebSocket):
         print("WebSocket disconnected.")
     except ConnectionClosedOK:
         print("WebSocket connection closed cleanly.")
+    except Exception as e:
+        print(f"WebSocket error: {e}")
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
